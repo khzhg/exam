@@ -1,0 +1,8 @@
+题目类型,题目标题,题目内容,选项A,选项B,选项C,选项D,选项E,选项F,正确答案,解析,难度,科目,章节
+single,单选题示例1,JavaScript的数据类型不包括以下哪一项？,Number,String,Class,Boolean,,,C,Class不是JavaScript的基本数据类型,2,JavaScript基础,数据类型
+multiple,多选题示例1,以下哪些是前端框架？,Vue.js,React,Angular,Express,,,A,B,C,Vue.js、React、Angular都是前端框架,2,前端开发,框架选择
+truefalse,判断题示例1,JavaScript是一种编译型语言。,正确,错误,,,,,B,JavaScript是解释型语言,1,JavaScript基础,语言特性
+essay,简答题示例1,请简述JavaScript闭包的概念和应用场景。,,,,,,,闭包是指函数可以访问其外部作用域的变量。应用场景包括：1.数据封装；2.模块化编程；3.回调函数中保持状态等。,闭包是JavaScript的重要概念,3,JavaScript高级,作用域与闭包
+fill,填空题示例1,JavaScript中声明变量的关键字有___、___和___。,,,,,,,var||let||const,JavaScript中可以使用var、let、const三种关键字声明变量,2,JavaScript基础,变量声明
+fill,填空题示例2,CSS中设置元素宽度的属性是___，设置高度的属性是___。,,,,,,,width||height,基础的CSS盒模型属性,1,前端开发,CSS基础
+fill,填空题示例3,数组方法中___用于添加元素，___用于删除元素。,,,,,,,push||pop,注意这些答案本身不包含逗号，所以用||分隔更安全,2,前端开发,数组操作

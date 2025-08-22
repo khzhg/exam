@@ -1,0 +1,50 @@
+{
+  "name": "exam",
+  "version": "1.0.0",
+  "main": "index.js",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && NODE_NO_WARNINGS=1 node app.js",
+    "frontend": "cd frontend && NODE_NO_WARNINGS=1 npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && NODE_NO_WARNINGS=1 node app.js"
+  },
+  "keywords": [
+    "exam",
+    "online",
+    "education"
+  ],
+  "author": "Exam System Team",
+  "license": "ISC",
+  "description": "在线考试系统 - 支持题库管理、组卷考试、成绩统计",
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "axios": "^1.6.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "docx": "^9.5.1",
+    "dotenv": "^16.3.1",
+    "echarts": "^6.0.0",
+    "element-plus": "^2.4.0",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.10.0",
+    "multer": "^1.4.4-lts.1",
+    "sqlite3": "^5.1.6",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.0",
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.0.1",
+    "vite": "^4.4.0"
+  }
+}

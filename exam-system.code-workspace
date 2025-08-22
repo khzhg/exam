@@ -1,0 +1,38 @@
+{
+	"folders": [
+		{
+			"name": "exam-system",
+			"path": "."
+		},
+		{
+			"name": "backend",
+			"path": "./backend"
+		},
+		{
+			"name": "frontend", 
+			"path": "./frontend"
+		}
+	],
+	"settings": {
+		"npm.packageManager": "npm",
+		"files.exclude": {
+			"**/node_modules": true,
+			"**/dist": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/dist": true
+		}
+	},
+	"extensions": {
+		"recommendations": [
+			"vue.volar",
+			"ms-vscode.vscode-json",
+			"esbenp.prettier-vscode",
+			"bradlc.vscode-tailwindcss",
+			"ms-vscode.vscode-eslint"
+		]
+	}
+}

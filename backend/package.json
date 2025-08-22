@@ -1,0 +1,14 @@
+{
+  "name": "exam-backend",
+  "version": "1.0.0",
+  "description": "在线考试系统后端服务",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["exam", "online", "education", "nodejs", "express"],
+  "author": "Exam System Team",
+  "license": "MIT"
+}
