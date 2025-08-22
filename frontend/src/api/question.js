@@ -1,3 +1,11 @@
+// 按内容搜索题库
+export function searchQuestionsByContent(params) {
+  return request({
+    url: '/questions/search',
+    method: 'get',
+    params
+  })
+}
 import request from '@/utils/request'
 
 // 获取题目列表

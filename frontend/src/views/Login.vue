@@ -55,7 +55,7 @@
           </router-link>
         </p>
         <br />
-         <p>设计制作：韩泽弘</p>
+         <p>design：han V1.0</p>
       </div>
     </div>
   </div>

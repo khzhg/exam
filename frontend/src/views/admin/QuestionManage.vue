@@ -44,11 +44,14 @@
               <el-option label="困难" :value="3" />
             </el-select>
           </el-form-item>
+          <el-form-item label="题目内容">
+            <el-input v-model="filterForm.keyword" placeholder="输入题目内容关键词" clearable @keyup.enter="searchByContent" style="width: 220px" />
+          </el-form-item>
           <el-form-item label="科目">
             <el-input v-model="filterForm.subject" placeholder="输入科目" clearable />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="loadQuestions">搜索</el-button>
+            <el-button type="primary" @click="searchByContent">搜索</el-button>
             <el-button @click="resetFilter">重置</el-button>
           </el-form-item>
         </el-form>
@@ -422,6 +425,7 @@
 </template>
 
 <script setup>
+import { searchQuestionsByContent } from '@/api/question'
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Upload, Download, Delete, Folder, Refresh } from '@element-plus/icons-vue'
@@ -465,8 +469,36 @@ const pagination = reactive({
 const filterForm = reactive({
   type: '',
   difficulty: '',
-  subject: ''
+  subject: '',
+  keyword: ''
 })
+// 按内容搜索题库
+const searchByContent = async () => {
+  loading.value = true
+  try {
+    // 如果有内容关键词，使用内容搜索接口
+    if (filterForm.keyword && filterForm.keyword.trim()) {
+      const params = {
+        page: pagination.page,
+        limit: pagination.limit,
+        keyword: filterForm.keyword.trim()
+      }
+      const response = await searchQuestionsByContent(params)
+      if (response.success) {
+        questions.value = response.data.questions || []
+        pagination.total = response.data.total || 0
+      }
+    } else {
+      // 如果没有内容关键词，回到正常的筛选列表
+      await loadQuestions()
+    }
+  } catch (error) {
+    console.error('按内容搜索题目失败:', error)
+    ElMessage.error('按内容搜索题目失败')
+  } finally {
+    loading.value = false
+  }
+}
 
 const questionForm = reactive({
   id: null,
@@ -523,7 +555,8 @@ const resetFilter = () => {
   Object.assign(filterForm, {
     type: '',
     difficulty: '',
-    subject: ''
+    subject: '',
+    keyword: ''
   })
   loadQuestions()
 }

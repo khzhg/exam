@@ -6,6 +6,31 @@ const path = require('path');
 const fs = require('fs');
 
 class QuestionController {
+    // 按题目内容模糊搜索
+    static async searchByContent(req, res) {
+        try {
+            const { keyword = '', page = 1, limit = 10 } = req.query;
+            
+            // 如果没有关键词，返回空结果而不是错误
+            if (!keyword || keyword.trim().length === 0) {
+                return res.json({ 
+                    success: true, 
+                    data: { 
+                        questions: [], 
+                        total: 0, 
+                        page: parseInt(page), 
+                        limit: parseInt(limit) 
+                    } 
+                });
+            }
+            
+            const questions = await Question.searchByContent(keyword, { page: parseInt(page), limit: parseInt(limit) });
+            res.json({ success: true, data: questions });
+        } catch (error) {
+            console.error('Search questions by content error:', error);
+            res.status(500).json({ success: false, message: '搜索题目失败', error: error.message });
+        }
+    }
     // 获取题目列表
     static async getList(req, res) {
         try {

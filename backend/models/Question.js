@@ -1,6 +1,43 @@
 const database = require('../config/database');
 
 class Question {
+    // 根据题目内容模糊搜索题库
+    static async searchByContent(keyword, options = {}) {
+        const { page = 1, limit = 10 } = options;
+        const offset = (page - 1) * limit;
+        
+        // 先获取总数
+        const countSql = `SELECT COUNT(*) as total FROM questions WHERE content LIKE ?`;
+        const countResult = await database.query(countSql, [`%${keyword}%`]);
+        const total = countResult[0]?.total || 0;
+        
+        // 获取分页数据
+        const sql = `
+            SELECT * FROM questions
+            WHERE content LIKE ?
+            ORDER BY created_at DESC
+            LIMIT ? OFFSET ?
+        `;
+        const questions = await database.query(sql, [`%${keyword}%`, limit, offset]);
+        
+        // 解析 options 字段
+        questions.forEach(question => {
+            if (question.options) {
+                try {
+                    question.options = JSON.parse(question.options);
+                } catch (e) {
+                    question.options = [];
+                }
+            }
+        });
+        
+        return {
+            questions,
+            total,
+            page: parseInt(page),
+            limit: parseInt(limit)
+        };
+    }
     // 创建题目
     static async create(questionData) {
         const { type, title, content, options, correct_answer, explanation, difficulty = 1, subject, chapter } = questionData;

@@ -28,6 +28,9 @@ router.get('/',
     QuestionController.getList
 );
 
+// 按内容搜索题库（必须在 /:id 路由之前，避免被通配符拦截）
+router.get('/search', authenticateToken, QuestionController.searchByContent);
+
 // 获取题目详情
 router.get('/:id', 
     authenticateToken,
