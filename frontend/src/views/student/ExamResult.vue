@@ -129,6 +129,14 @@
                   <span v-if="isCorrectOption(option, answer.question?.correct_answer)" class="option-mark">✓</span>
                   <span v-if="isUserOption(option, answer.user_answer) && !isCorrectOption(option, answer.question?.correct_answer)" class="option-mark">✗</span>
                 </div>
+                              <div v-if="answer.type === 'multiple'" class="fill-answers">
+              <div class="user-answer">
+                <h4>我的答案：</h4>
+                <div class="answer-content">
+                  {{ answer.user_answer || "未作答" }}
+                </div>
+              </div>
+            </div>
               </div>
 
               <!-- 填空题答案 -->

@@ -3,27 +3,36 @@ const database = require('../config/database');
 class AnswerRecord {
     // 保存答题记录
     static async create(answerData) {
-        const { exam_record_id, question_id, user_answer, is_correct, score, answer_time } = answerData;
-        
+        let { exam_record_id, question_id, user_answer, is_correct, score, answer_time } = answerData;
+        // 多选题答案对象/数组转字符串
+        if (Array.isArray(user_answer)) {
+            user_answer = user_answer.join(',');
+        } else if (typeof user_answer === 'object' && user_answer !== null) {
+            user_answer = Object.keys(user_answer).filter(k => user_answer[k]).join(',');
+        }
         const sql = `
             INSERT INTO answer_records (exam_record_id, question_id, user_answer, is_correct, score, answer_time)
             VALUES (?, ?, ?, ?, ?, ?)
         `;
-        
         const result = await database.run(sql, [exam_record_id, question_id, user_answer, is_correct, score, answer_time || null]);
         return result.lastID;
     }
 
     // 更新答题记录
     static async update(examRecordId, questionId, userAnswer, isCorrect, score, answerTime) {
+        // 多选题答案对象/数组转字符串
+        let ua = userAnswer;
+        if (Array.isArray(ua)) {
+            ua = ua.join(',');
+        } else if (typeof ua === 'object' && ua !== null) {
+            ua = Object.keys(ua).filter(k => ua[k]).join(',');
+        }
         const sql = `
             UPDATE answer_records 
             SET user_answer = ?, is_correct = ?, score = ?, answer_time = ?, answered_at = CURRENT_TIMESTAMP
             WHERE exam_record_id = ? AND question_id = ?
         `;
-        
-        const result = await database.run(sql, [userAnswer, isCorrect, score, answerTime || null, examRecordId, questionId]);
-        
+        const result = await database.run(sql, [ua, isCorrect, score, answerTime || null, examRecordId, questionId]);
         if (result.changes === 0) {
             // 如果没有更新记录，则创建新记录
             return await this.create({
@@ -35,7 +44,6 @@ class AnswerRecord {
                 answer_time: answerTime
             });
         }
-        
         return true;
     }
 

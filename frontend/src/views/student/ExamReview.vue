@@ -6,7 +6,9 @@
         <h2>{{ examData.paper.title }} - 答题解析</h2>
         <el-descriptions :column="2" border>
           <el-descriptions-item label="考试类型">
-            {{ examData.examRecord.type === 'practice' ? '练习模式' : '正式考试' }}
+            {{
+              examData.examRecord.type === "practice" ? "练习模式" : "正式考试"
+            }}
           </el-descriptions-item>
           <el-descriptions-item label="考试时间">
             {{ formatDate(examData.examRecord.start_time) }}
@@ -15,7 +17,8 @@
             {{ formatDuration(examData.examRecord.duration) }}
           </el-descriptions-item>
           <el-descriptions-item label="得分">
-            {{ examData.examRecord.obtained_score }} / {{ examData.paper.total_score }}
+            {{ examData.examRecord.obtained_score }} /
+            {{ examData.paper.total_score }}
           </el-descriptions-item>
           <el-descriptions-item label="正确率">
             {{ examData.statistics.accuracy }}%
@@ -28,7 +31,7 @@
 
       <!-- 筛选器 -->
       <el-divider content-position="left">答题详情</el-divider>
-      
+
       <div class="detail-filters">
         <el-radio-group v-model="filterType" @change="filterAnswers">
           <el-radio-button label="all">全部</el-radio-button>
@@ -44,19 +47,24 @@
 
       <!-- 答题详情列表 -->
       <div class="answer-list">
-        <div 
-          v-for="(answer, index) in filteredAnswers" 
+        <div
+          v-for="(answer, index) in filteredAnswers"
           :key="answer.question_id"
           class="answer-item"
-          :class="{ 'correct': answer.is_correct, 'wrong': !answer.is_correct }"
+          :class="{ correct: answer.is_correct, wrong: !answer.is_correct }"
         >
           <div class="question-header">
-            <span class="question-number">第 {{ getQuestionNumber(answer) }} 题</span>
+            <span class="question-number"
+              >第 {{ getQuestionNumber(answer) }} 题</span
+            >
             <el-tag :type="getQuestionTypeColor(answer.type)" size="small">
               {{ getTypeName(answer.type) }}
             </el-tag>
-            <el-tag :type="answer.is_correct ? 'success' : 'danger'" size="small">
-              {{ answer.is_correct ? '正确' : '错误' }}
+            <el-tag
+              :type="answer.is_correct ? 'success' : 'danger'"
+              size="small"
+            >
+              {{ answer.is_correct ? "正确" : "错误" }}
             </el-tag>
             <span class="question-score">{{ answer.score }} 分</span>
           </div>
@@ -64,31 +72,60 @@
           <div class="question-content">
             <div class="question-title">{{ answer.title }}</div>
             <div class="question-text">{{ answer.content }}</div>
-            
+
             <!-- 选择题选项 -->
-            <div v-if="answer.type !== 'essay' && answer.type !== 'fill'" class="question-options">
-              <div 
-                v-for="(option, optionIndex) in answer.options" 
+            <div
+              v-if="answer.type !== 'essay' && answer.type !== 'fill'"
+              class="question-options"
+            >
+              <div
+                v-for="(option, optionIndex) in answer.options"
                 :key="optionIndex"
                 class="option-item"
                 :class="{
-                  'correct-option': isCorrectOption(option, answer.correct_answer),
+                  'correct-option': isCorrectOption(
+                    option,
+                    answer.correct_answer
+                  ),
                   'user-option': isUserOption(option, answer.user_answer),
-                  'wrong-option': isUserOption(option, answer.user_answer) && !isCorrectOption(option, answer.correct_answer)
+                  'wrong-option':
+                    isUserOption(option, answer.user_answer) &&
+                    !isCorrectOption(option, answer.correct_answer),
                 }"
               >
                 <span class="option-label">{{ option.key }}.</span>
                 <span class="option-text">{{ option.value }}</span>
-                <span v-if="isCorrectOption(option, answer.correct_answer)" class="option-mark">✓</span>
-                <span v-if="isUserOption(option, answer.user_answer) && !isCorrectOption(option, answer.correct_answer)" class="option-mark">✗</span>
+                <span
+                  v-if="isCorrectOption(option, answer.correct_answer)"
+                  class="option-mark"
+                  >✓</span
+                >
+                <span
+                  v-if="
+                    isUserOption(option, answer.user_answer) &&
+                    !isCorrectOption(option, answer.correct_answer)
+                  "
+                  class="option-mark"
+                  >✗</span
+                >
               </div>
+              <div v-if="answer.type === 'multiple'" class="fill-answers">
+              <div class="user-answer">
+                <h4>我的答案：</h4>
+                <div class="answer-content">
+                  {{ answer.user_answer || "未作答" }}
+                </div>
+              </div>
+            </div>
             </div>
 
             <!-- 填空题答案 -->
             <div v-if="answer.type === 'fill'" class="fill-answers">
               <div class="user-answer">
                 <h4>我的答案：</h4>
-                <div class="answer-content">{{ answer.user_answer || '未作答' }}</div>
+                <div class="answer-content">
+                  {{ answer.user_answer || "未作答" }}
+                </div>
               </div>
               <div class="correct-answer">
                 <h4>参考答案：</h4>
@@ -100,7 +137,9 @@
             <div v-if="answer.type === 'essay'" class="essay-answers">
               <div class="user-answer">
                 <h4>我的答案：</h4>
-                <div class="answer-content">{{ answer.user_answer || '未作答' }}</div>
+                <div class="answer-content">
+                  {{ answer.user_answer || "未作答" }}
+                </div>
               </div>
               <div class="correct-answer">
                 <h4>参考答案：</h4>
@@ -120,7 +159,11 @@
       <!-- 操作按钮 -->
       <div class="review-actions">
         <el-button @click="goBack">返回</el-button>
-        <el-button type="primary" @click="addToWrongQuestions" v-if="wrongAnswers.length > 0">
+        <el-button
+          type="primary"
+          @click="addToWrongQuestions"
+          v-if="wrongAnswers.length > 0"
+        >
           将错题加入错题本
         </el-button>
       </div>
@@ -134,161 +177,168 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import request from '@/utils/request'
+import { ref, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import request from "@/utils/request";
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 // 响应式数据
-const examData = ref(null)
-const filterType = ref('all')
+const examData = ref(null);
+const filterType = ref("all");
 
 // 计算属性
 const filteredAnswers = computed(() => {
-  if (!examData.value) return []
-  
-  let answers = examData.value.answers || []
-  
-  if (filterType.value === 'all') {
-    return answers
-  } else if (filterType.value === 'correct') {
-    return answers.filter(answer => answer.is_correct)
-  } else if (filterType.value === 'wrong') {
-    return answers.filter(answer => !answer.is_correct)
+  if (!examData.value) return [];
+
+  let answers = examData.value.answers || [];
+
+  if (filterType.value === "all") {
+    return answers;
+  } else if (filterType.value === "correct") {
+    return answers.filter((answer) => answer.is_correct);
+  } else if (filterType.value === "wrong") {
+    return answers.filter((answer) => !answer.is_correct);
   } else {
-    return answers.filter(answer => answer.type === filterType.value)
+    return answers.filter((answer) => answer.type === filterType.value);
   }
-})
+});
 
 const wrongAnswers = computed(() => {
-  if (!examData.value) return []
-  return examData.value.answers.filter(answer => !answer.is_correct)
-})
+  if (!examData.value) return [];
+  return examData.value.answers.filter((answer) => !answer.is_correct);
+});
 
 // 方法
 const loadExamData = async () => {
   try {
-    const examRecordId = route.params.examRecordId
+    const examRecordId = route.params.examRecordId;
     if (!examRecordId) {
-      ElMessage.error('缺少考试记录ID')
-      router.push('/student/exams')
-      return
+      ElMessage.error("缺少考试记录ID");
+      router.push("/student/exams");
+      return;
     }
 
-    const response = await request.get(`/exam/${examRecordId}/result`)
+    const response = await request.get(`/exam/${examRecordId}/result`);
     if (response.success) {
-      examData.value = response.data
+      examData.value = response.data;
     } else {
-      throw new Error(response.message || '获取考试数据失败')
+      throw new Error(response.message || "获取考试数据失败");
     }
   } catch (error) {
-    console.error('加载考试数据失败:', error)
-    ElMessage.error(error.message || '加载考试数据失败')
+    console.error("加载考试数据失败:", error);
+    ElMessage.error(error.message || "加载考试数据失败");
   }
-}
+};
 
 const getTypeName = (type) => {
   const typeMap = {
-    single: '单选题',
-    multiple: '多选题',
-    truefalse: '判断题',
-    fill: '填空题',
-    essay: '简答题'
-  }
-  return typeMap[type] || type
-}
+    single: "单选题",
+    multiple: "多选题",
+    truefalse: "判断题",
+    fill: "填空题",
+    essay: "简答题",
+  };
+  return typeMap[type] || type;
+};
 
 const getQuestionTypeColor = (type) => {
   const colorMap = {
-    single: 'primary',
-    multiple: 'success',
-    truefalse: 'warning',
-    fill: 'info',
-    essay: 'info'
-  }
-  return colorMap[type] || 'primary'
-}
+    single: "primary",
+    multiple: "success",
+    truefalse: "warning",
+    fill: "info",
+    essay: "info",
+  };
+  return colorMap[type] || "primary";
+};
 
 const getQuestionNumber = (answer) => {
-  if (!examData.value) return 0
-  const index = examData.value.answers.findIndex(a => a.question_id === answer.question_id)
-  return index + 1
-}
+  if (!examData.value) return 0;
+  const index = examData.value.answers.findIndex(
+    (a) => a.question_id === answer.question_id
+  );
+  return index + 1;
+};
 
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+  return new Date(dateString).toLocaleString("zh-CN");
+};
 
 const formatDuration = (seconds) => {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = seconds % 60
-  
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
   if (hours > 0) {
-    return `${hours}小时${minutes}分钟${secs}秒`
+    return `${hours}小时${minutes}分钟${secs}秒`;
   } else if (minutes > 0) {
-    return `${minutes}分钟${secs}秒`
+    return `${minutes}分钟${secs}秒`;
   } else {
-    return `${secs}秒`
+    return `${secs}秒`;
   }
-}
+};
 
 const isCorrectOption = (option, correctAnswer) => {
   if (Array.isArray(correctAnswer)) {
-    return correctAnswer.includes(option.key)
+    return correctAnswer.includes(option.key);
   }
-  return correctAnswer && correctAnswer.split(',').includes(option.key)
-}
+  return correctAnswer && correctAnswer.split(",").includes(option.key);
+};
 
 const isUserOption = (option, userAnswer) => {
-  if (!userAnswer) return false
-  
+  if (!userAnswer) return false;
+
   // 处理多选题的情况
-  if (userAnswer === '[object Object]') return false
-  
+  if (userAnswer === "[object Object]") return false;
+
   if (Array.isArray(userAnswer)) {
-    return userAnswer.includes(option.key)
+    return userAnswer.includes(option.key);
   }
-  
+
   // 处理字符串形式的答案
-  const answers = userAnswer.toString().split(',').map(a => a.trim())
-  return answers.includes(option.key)
-}
+  const answers = userAnswer
+    .toString()
+    .split(",")
+    .map((a) => a.trim());
+  return answers.includes(option.key);
+};
 
 const filterAnswers = () => {
   // 筛选逻辑已在computed中处理
-}
+};
 
 const goBack = () => {
-  router.go(-1)
-}
+  router.go(-1);
+};
 
 const addToWrongQuestions = async () => {
   try {
-    const wrongQuestionIds = wrongAnswers.value.map(answer => answer.question_id)
-    
-    const response = await request.post('/wrong-questions/batch', {
-      question_ids: wrongQuestionIds
-    })
-    
+    const wrongQuestionIds = wrongAnswers.value.map(
+      (answer) => answer.question_id
+    );
+
+    const response = await request.post("/wrong-questions/batch", {
+      question_ids: wrongQuestionIds,
+    });
+
     if (response.success) {
-      ElMessage.success('错题已加入错题本')
+      ElMessage.success("错题已加入错题本");
     } else {
-      throw new Error(response.message || '加入错题本失败')
+      throw new Error(response.message || "加入错题本失败");
     }
   } catch (error) {
-    console.error('加入错题本失败:', error)
-    ElMessage.error(error.message || '加入错题本失败')
+    console.error("加入错题本失败:", error);
+    ElMessage.error(error.message || "加入错题本失败");
   }
-}
+};
 
 // 生命周期
 onMounted(() => {
-  loadExamData()
-})
+  loadExamData();
+});
 </script>
 
 <style scoped>
@@ -324,11 +374,11 @@ onMounted(() => {
 }
 
 .answer-item.correct {
-  border-color: #67C23A;
+  border-color: #67c23a;
 }
 
 .answer-item.wrong {
-  border-color: #F56C6C;
+  border-color: #f56c6c;
 }
 
 .question-header {
@@ -348,7 +398,7 @@ onMounted(() => {
 .question-score {
   margin-left: auto;
   font-weight: bold;
-  color: #409EFF;
+  color: #409eff;
 }
 
 .question-content {
@@ -380,17 +430,17 @@ onMounted(() => {
 
 .option-item.correct-option {
   background-color: #e7f5e7;
-  border: 1px solid #67C23A;
+  border: 1px solid #67c23a;
 }
 
 .option-item.wrong-option {
   background-color: #fde7e7;
-  border: 1px solid #F56C6C;
+  border: 1px solid #f56c6c;
 }
 
 .option-item.user-option:not(.wrong-option) {
   background-color: #e7f5e7;
-  border: 1px solid #67C23A;
+  border: 1px solid #67c23a;
 }
 
 .option-label {
@@ -420,7 +470,7 @@ onMounted(() => {
 .user-answer h4,
 .correct-answer h4 {
   margin-bottom: 10px;
-  color: #409EFF;
+  color: #409eff;
 }
 
 .answer-content {
