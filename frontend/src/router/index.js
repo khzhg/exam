@@ -47,7 +47,7 @@ const routes = [
   // 学生路由
   {
     path: '/student',
-    meta: { requiresAuth: true, role: 'student' },
+    meta: { requiresAuth: true },
     children: [
       {
         path: 'dashboard',

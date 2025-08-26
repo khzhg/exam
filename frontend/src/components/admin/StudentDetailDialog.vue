@@ -106,6 +106,11 @@
               {{ formatDate(scope.row.start_time) }}
             </template>
           </el-table-column>
+          <el-table-column label="操作" width="120">
+            <template #default="scope">
+              <el-button size="small" @click="viewStudentResult(scope.row.id)">答题详情</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-card>
     </div>
@@ -121,7 +126,8 @@
 import { ref, reactive, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { adminAPI } from '@/api/admin'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -248,7 +254,16 @@ const getStatusText = (status) => {
   }
   return textMap[status] || status
 }
-
+const viewStudentResult = (record) => {
+  console.log('111111111',record);
+  if (!record) return
+  router.push({
+    name: 'ExamReview',
+    params: { 
+      examRecordId: record
+    }
+  })
+} 
 // 导出学生报告
 const exportStudentReport = () => {
   ElMessage.info('导出功能待实现')

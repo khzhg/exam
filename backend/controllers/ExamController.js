@@ -522,7 +522,7 @@ class ExamController {
             
             console.log('查看考试结果 - recordUserId:', recordUserId, 'currentUserId:', currentUserId);
             
-            if (recordUserId !== currentUserId) {
+            if (recordUserId !== currentUserId && req.user.role !== 'admin') {
                 console.log('查看考试结果 - 权限验证失败');
                 return res.status(403).json({
                     success: false,
